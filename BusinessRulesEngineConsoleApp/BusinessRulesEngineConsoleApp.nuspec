@@ -9,7 +9,4 @@
     <description>Business Rules Engine Console Application</description>
     <releaseNotes />
   </metadata>
-  <files>
-  	<file src="..\Rules\*" />
-  </files>
 </package>
