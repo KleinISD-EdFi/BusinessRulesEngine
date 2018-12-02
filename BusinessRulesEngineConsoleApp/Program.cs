@@ -17,10 +17,11 @@ namespace BusinessRulesEngineConsoleApp
         {
             container = new Container();
 
+            container.Register<IModel, Model>();
             container.Register<IEmailService, EmailService>();
+            container.Register<IReportService, ReportService>();
             container.Register<IRulesEngineRunner, RulesEngineRunner>();
             container.Register<IRulesEngineService, RulesEngineService>();
-            container.Register<IModel, Model>();
 
             container.Verify();
         }

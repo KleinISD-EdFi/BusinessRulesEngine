@@ -71,6 +71,7 @@
     <Compile Include="Models\EmailService.cs" />
     <Compile Include="Models\EngineSchemaProvider.cs" />
     <Compile Include="Models\OdsConfigurationValues.cs" />
+    <Compile Include="Models\ReportData.cs" />
     <Compile Include="Models\ReportService.cs" />
     <Compile Include="Models\RulesEngineConfiguration.cs" />
     <Compile Include="Models\RulesEngineRunner.cs" />

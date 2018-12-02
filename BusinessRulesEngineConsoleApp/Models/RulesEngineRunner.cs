@@ -15,26 +15,19 @@ namespace BusinessRulesEngineConsoleApp.Models
 
     public class RulesEngineRunner : IRulesEngineRunner
     {
-        private Model _engineObjectModel;
+        private IModel _engineObjectModel;
         private IRulesEngineService _rulesEngineService;
 
-        // public RulesEngineRunner()
-        // {
-        //     Func<Model> modelCreatorDelegate = () => new ModelBuilder(new DirectoryRulesStreams(new RulesEngineConfiguration().RulesFileFolder).Streams).Build(null, new EngineSchemaProvider());
-        //     _engineObjectModel = modelCreatorDelegate.Invoke();
-        //     _rulesEngineService = new RulesEngineService(_engineObjectModel, _fourDigitOdsDbYear);
-        // }
-        public RulesEngineRunner(IRulesEngineService rulesEngineService)
-        {
-            _rulesEngineService = rulesEngineService;
-        }
-
-        public bool RunEngine()
+        public RulesEngineRunner()
         {
             Func<Model> modelCreatorDelegate = () => new ModelBuilder(new DirectoryRulesStreams(new RulesEngineConfiguration().RulesFileFolder).Streams).Build(null, new EngineSchemaProvider());
             _engineObjectModel = modelCreatorDelegate.Invoke();
             _rulesEngineService = new RulesEngineService(_engineObjectModel);
 
+        }
+
+        public bool RunEngine()
+        {
             var collections = _rulesEngineService.GetCollections();
             var ruleValidationIds = new List<int>();
             
