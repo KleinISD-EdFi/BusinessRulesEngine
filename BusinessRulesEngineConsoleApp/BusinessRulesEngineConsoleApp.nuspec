@@ -10,6 +10,6 @@
     <releaseNotes />
   </metadata>
   <files>
-  	<file src="Rules\*">
+  	<file src="Rules\*" />
   </files>
 </package>
