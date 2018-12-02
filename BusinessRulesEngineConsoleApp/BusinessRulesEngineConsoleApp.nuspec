@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>BusinessRulesEngineConsoleApplication</id>
+    <version>1.0.0</version>
+    <authors>$octoAuthor$</authors>
+    <owners>$octoOwner$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Business Rules Engine Console Application</description>
+    <releaseNotes />
+  </metadata>
+  <files>
+  	<file src="Rules\*">
+  </files>
+</package>
