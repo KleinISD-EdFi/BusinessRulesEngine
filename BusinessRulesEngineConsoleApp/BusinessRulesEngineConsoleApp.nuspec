@@ -3,13 +3,13 @@
   <metadata>
     <id>BusinessRulesEngineConsoleApplication</id>
     <version>1.0.0</version>
-    <authors>$octoAuthor$</authors>
-    <owners>$octoOwner$</owners>
+    <authors>DoubleLine</authors>
+    <owners>KleinISD</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Business Rules Engine Console Application</description>
     <releaseNotes />
   </metadata>
   <files>
-  	<file src="Rules\*" />
+  	<file src="Rules\**" />
   </files>
 </package>
