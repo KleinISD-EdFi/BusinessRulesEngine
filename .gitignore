@@ -31,6 +31,8 @@
 
 [Dd]ebugPublic/
 # Build results
+Engine/[Bb]in/
+Engine/[Oo]bj/
 BusinessRulesEngineConsoleApp/[Dd]ebug/
 BusinessRulesEngineConsoleApp/[Rr]elease/
 BusinessRulesEngineConsoleApp/[Rr]eleases/
