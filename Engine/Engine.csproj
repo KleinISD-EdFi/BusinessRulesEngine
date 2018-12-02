@@ -128,6 +128,7 @@
     <Compile Include="Utility\RuleRunner.cs" />
     <Compile Include="Utility\DirectoryRulesStreams.cs" />
   </ItemGroup>
+  <Import Project="..\Rules\Rules.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

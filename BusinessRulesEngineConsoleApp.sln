@@ -11,6 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csp
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Rules\Rules.projitems*{7dd0bd93-1ee3-4c63-9d54-e8a9c9b1ad6b}*SharedItemsImports = 4
 		Rules\Rules.projitems*{df6c51ca-8b4c-4aa2-8995-ba63224fb0c3}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
