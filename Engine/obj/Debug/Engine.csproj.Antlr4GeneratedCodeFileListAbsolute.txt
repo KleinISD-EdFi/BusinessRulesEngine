@@ -1,6 +1,0 @@
-C:\Projects\KleinISD-EdFi\BusinessRulesEngineConsoleApp\Engine\obj\Debug\MsdsLexer.cs
-C:\Projects\KleinISD-EdFi\BusinessRulesEngineConsoleApp\Engine\obj\Debug\MsdsParser.cs
-C:\Projects\KleinISD-EdFi\BusinessRulesEngineConsoleApp\Engine\obj\Debug\MsdsParserListener.cs
-C:\Projects\KleinISD-EdFi\BusinessRulesEngineConsoleApp\Engine\obj\Debug\MsdsParserBaseListener.cs
-C:\Projects\KleinISD-EdFi\BusinessRulesEngineConsoleApp\Engine\obj\Debug\MsdsParserVisitor.cs
-C:\Projects\KleinISD-EdFi\BusinessRulesEngineConsoleApp\Engine\obj\Debug\MsdsParserBaseVisitor.cs
