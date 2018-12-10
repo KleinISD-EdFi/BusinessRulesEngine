@@ -15,7 +15,7 @@ namespace BusinessRulesEngineConsoleApp.Models
         public string Table { get; set; }
         public string Message { get; set; }
 
-        public string CsvString => $"{Collection},{Rule},rules.{Table},{Id},{Message}";
+        // public string CsvString => $"{Collection},{Rule},rules.{Table},{Id},{Message}";
     }
 
 }

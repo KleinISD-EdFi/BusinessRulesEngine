@@ -51,14 +51,19 @@ namespace BusinessRulesEngineConsoleApp.Models
 
             foreach (var ruleValidation in validationDetailsToEmail)
             {
-                var reportData = new ReportData
-                {
-                    Collection = GetCollectionNameFromRuleValidationId((int) ruleValidation.RuleValidationId),
-                    Rule = GetRuleNameFromRuleComponentId(ruleValidation.RuleId),
-                    // Get table name and other records.
-                };
+                // var reportData = new ReportData
+                // {
+                // Collection = GetCollectionNameFromRuleValidationId((int) ruleValidation.RuleValidationId),
+                // Rule = GetRuleNameFromRuleComponentId(ruleValidation.RuleId),
+                // Get table name and other records.
+                // };
+                // var reportData = new ReportData();
 
-                sb.AppendLine(reportData.CsvString);
+                // reportData.Collection = GetCollectionNameFromRuleValidationId((int) ruleValidation.RuleValidationId);
+                // reportData.Rule = GetRuleNameFromRuleComponentId(ruleValidation.RuleId);
+
+                // sb.AppendLine(reportData.CsvString);
+                sb.AppendLine($"{ruleValidation.RuleValidationId},{ruleValidation.Id},{ruleValidation.IsError},{ruleValidation.Message},{ruleValidation.RuleId},{ruleValidation.RuleValidation}");
             }
 
             File.WriteAllText(@"C:\temp\InvalidRecords.csv", sb.ToString());
