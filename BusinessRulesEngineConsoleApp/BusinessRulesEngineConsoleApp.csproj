@@ -97,13 +97,29 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="App.Octopus.config" />
+    <None Include="BusinessRulesEngineConsoleApp.nuspec" />
     <None Include="packages.config" />
+    <None Include="Rules\MSDS.sample" />
+    <None Include="Rules\rules.nuspec" />
+    <None Include="Rules\Rules.projitems" />
+    <None Include="Rules\Rules.shproj" />
+    <None Include="Rules\Rules.v2.ncrunchproject" />
+    <None Include="Rules\Rules\Rules.v2.ncrunchproject" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{7dd0bd93-1ee3-4c63-9d54-e8a9c9b1ad6b}</Project>
       <Name>Engine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Rules\Collections.rules" />
+    <EmbeddedResource Include="Rules\NameChecks.rules" />
+    <EmbeddedResource Include="Rules\StaffChecks.rules" />
+    <EmbeddedResource Include="Rules\ZCollectionCertificationBusinessRules.rules" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Rules\Rules.shproj.user" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\OctoPack.3.6.3\build\OctoPack.targets" Condition="Exists('..\packages\OctoPack.3.6.3\build\OctoPack.targets')" />

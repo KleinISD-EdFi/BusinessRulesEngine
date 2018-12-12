@@ -24,7 +24,6 @@ namespace BusinessRulesEngineConsoleApp
             container.Register<IRulesEngineRunner, RulesEngineRunner>();
             container.Register<IRulesEngineService, RulesEngineService>();
             
-
             container.Verify();
         }
 

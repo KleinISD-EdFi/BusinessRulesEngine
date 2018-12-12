@@ -1,0 +1,13 @@
+ruleset StaffChecks
+
+rule 1.0.0
+require CheckUppercase({Staff}.[FirstName]) = 1
+else 'FirstName is not Uppercase'
+
+rule 1.0.1
+require CheckUppercase({Staff}.[MiddleName]) = 1
+else 'MiddleName is not Uppercase'
+
+rule 1.0.2
+require CheckUppercase({Staff}.[LastSurname]) = 1
+else 'LastSurname is not Uppercase'
