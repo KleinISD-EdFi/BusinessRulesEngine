@@ -24,7 +24,6 @@ namespace BusinessRulesEngineConsoleApp.Models
             Func<Model> modelCreatorDelegate = () => new ModelBuilder(new DirectoryRulesStreams(new RulesEngineConfiguration().RulesFileFolder).Streams).Build(null, new EngineSchemaProvider());
             _engineObjectModel = modelCreatorDelegate.Invoke();
             _rulesEngineService = new RulesEngineService(_engineObjectModel);
-
         }
 
         public bool RunEngine()
@@ -40,7 +39,7 @@ namespace BusinessRulesEngineConsoleApp.Models
                 }
                 var reportService = new ReportService();
 
-                reportService.CreateReport(ruleValidationIds);
+                reportService.CreateReport(ruleValidationIds, collections);
 
                 return true;
             }

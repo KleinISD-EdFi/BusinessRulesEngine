@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessRulesEngineConsoleApp.Database;
+using Engine.Models;
 
 namespace BusinessRulesEngineConsoleApp.Models
 {
     public interface IReportService
     {
-        void CreateReport(List<int> ruleValidationIds);
+        void CreateReport(List<int> ruleValidationIds, List<Collection> collections);
     }
 
     public class ReportService : IReportService
@@ -26,18 +27,17 @@ namespace BusinessRulesEngineConsoleApp.Models
         private readonly List<string> _columns = new List<string>()
         {
             "Collection",
-            "RuleId",
-            "View/Table",
             "Id",
+            "Rule",
             "Message"
         };
 
-        public void CreateReport(List<int> ruleValidationIds)
+        public void CreateReport(List<int> ruleValidationIds, List<Collection> collections)
         {
-            // var props = invalidRecords.First().GetType().GetProperties();
-
             var sb = new StringBuilder();
             SetAllValidationDetails();
+            SetAllRuleValidations();
+            SetAllRuleComponents();
             SetAllEmails();
 
             var validationDetailsToEmail = new List<RuleValidationDetail>();
@@ -49,21 +49,18 @@ namespace BusinessRulesEngineConsoleApp.Models
             foreach (var column in _columns)
                 sb.Append(column + ",");
 
+            sb.AppendLine();
             foreach (var ruleValidation in validationDetailsToEmail)
             {
-                // var reportData = new ReportData
-                // {
-                // Collection = GetCollectionNameFromRuleValidationId((int) ruleValidation.RuleValidationId),
-                // Rule = GetRuleNameFromRuleComponentId(ruleValidation.RuleId),
-                // Get table name and other records.
-                // };
-                // var reportData = new ReportData();
+                var reportData = new ReportData
+                {
+                    Collection = GetCollectionNameFromRuleValidationId(ruleValidation.RuleValidationId),
+                    Rule = GetRuleNameFromRuleComponentId(ruleValidation.RuleId),
+                    Id =  ruleValidation.Id,
+                    Message = ruleValidation.Message
+                };
 
-                // reportData.Collection = GetCollectionNameFromRuleValidationId((int) ruleValidation.RuleValidationId);
-                // reportData.Rule = GetRuleNameFromRuleComponentId(ruleValidation.RuleId);
-
-                // sb.AppendLine(reportData.CsvString);
-                sb.AppendLine($"{ruleValidation.RuleValidationId},{ruleValidation.Id},{ruleValidation.IsError},{ruleValidation.Message},{ruleValidation.RuleId},{ruleValidation.RuleValidation}");
+                sb.AppendLine(reportData.CsvString);
             }
 
             File.WriteAllText(@"C:\temp\InvalidRecords.csv", sb.ToString());
@@ -110,7 +107,7 @@ namespace BusinessRulesEngineConsoleApp.Models
             return _validationDetails.Where(record => record.RuleValidationId == ruleValidationId).ToList();
         }
 
-        private string GetCollectionNameFromRuleValidationId(int ruleValidationId)
+        private string GetCollectionNameFromRuleValidationId(long ruleValidationId)
         {
             return _ruleValidations.First(record => record.RuleValidationId == ruleValidationId).CollectionId;
         }

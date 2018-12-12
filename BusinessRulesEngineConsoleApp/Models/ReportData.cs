@@ -11,11 +11,11 @@ namespace BusinessRulesEngineConsoleApp.Models
     {
         public string Collection { get; set; }
         public string Rule { get; set; }
-        public string Id { get; set; }
-        public string Table { get; set; }
+        public long Id { get; set; }
         public string Message { get; set; }
+        public string Table { get; set; }
 
-        // public string CsvString => $"{Collection},{Rule},rules.{Table},{Id},{Message}";
+        public string CsvString => $"{Collection},{Id},{Rule},{Message}";
     }
 
 }
