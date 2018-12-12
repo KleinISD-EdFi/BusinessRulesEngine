@@ -17,6 +17,7 @@ namespace BusinessRulesEngineConsoleApp.Models
     {
         private IModel _engineObjectModel;
         private IRulesEngineService _rulesEngineService;
+        public readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public RulesEngineRunner()
         {
@@ -45,6 +46,7 @@ namespace BusinessRulesEngineConsoleApp.Models
             }
             catch(Exception ex)
             {
+                Log.Error(ex);
                 return false;
             }   
         }
