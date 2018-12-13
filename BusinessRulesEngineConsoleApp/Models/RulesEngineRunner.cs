@@ -28,6 +28,8 @@ namespace BusinessRulesEngineConsoleApp.Models
 
         public bool RunEngine()
         {
+            Log.Info($"NEW run starting at {DateTime.Now}");
+
             var collections = _rulesEngineService.GetCollections();
             var ruleValidationIds = new List<int>();
             

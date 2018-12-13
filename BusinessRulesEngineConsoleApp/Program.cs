@@ -12,7 +12,6 @@ namespace BusinessRulesEngineConsoleApp
     static class Program
     {
         static readonly Container container;
-        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         static Program()
         {
@@ -29,7 +28,6 @@ namespace BusinessRulesEngineConsoleApp
 
         static void Main(string[] args)
         {
-            Log.Info($"NEW run starting at {DateTime.Now}");
             var rulesEngineRunner = container.GetInstance<IRulesEngineRunner>();
             rulesEngineRunner.RunEngine();
         }
