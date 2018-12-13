@@ -97,6 +97,9 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="BusinessRulesEngineConsoleApp.Release.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="BusinessRulesEngineConsoleApp.nuspec" />
     <None Include="packages.config" />
     <None Include="Rules\MSDS.sample" />
