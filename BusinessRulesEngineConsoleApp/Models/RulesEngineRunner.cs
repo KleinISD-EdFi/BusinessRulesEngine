@@ -10,7 +10,7 @@ namespace BusinessRulesEngineConsoleApp.Models
 {
     public interface IRulesEngineRunner
     {
-        bool RunEngine();
+        bool RunEngine(string fourDigitOdsYear = null);
     }
 
     public class RulesEngineRunner : IRulesEngineRunner
@@ -26,30 +26,38 @@ namespace BusinessRulesEngineConsoleApp.Models
             _rulesEngineService = new RulesEngineService(_engineObjectModel);
         }
 
-        public bool RunEngine()
+        public bool RunEngine(string fourDigitOdsYear = null)
         {
-            Log.Info($"NEW run starting at {DateTime.Now}");
+            Log.Info($"STARTING new run at {DateTime.Now}");
 
             var collections = _rulesEngineService.GetCollections();
             var ruleValidationIds = new List<int>();
-            
+
+            // If command line argument is successfully passed then set it in the rulesEngineService here.
+            if(fourDigitOdsYear != null)
+                _rulesEngineService.SetFourDigitOdsYear(fourDigitOdsYear);
+
             try
             {
                 foreach (var collection in collections)
                 {
                     ruleValidationIds.Add(_rulesEngineService.RunEngine(collection.CollectionId));
                 }
-                var reportService = new ReportService();
 
+                var reportService = new ReportService();
                 reportService.CreateReport(ruleValidationIds, collections);
+
+                Log.Info($"COMPLETED at {DateTime.Now}");
 
                 return true;
             }
             catch(Exception ex)
             {
+                Log.Error("FAILED");
                 Log.Error(ex);
+
                 return false;
-            }   
+            }
         }
     }
 }

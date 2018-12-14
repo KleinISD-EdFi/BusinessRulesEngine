@@ -13,20 +13,15 @@ namespace BusinessRulesEngineConsoleApp.Models
 {
     public interface IRulesEngineService
     {
-        int RunEngine(string collectionId);
+        int RunEngine(string collectionId, string fourDigitOdsDbYear = null);
+        void SetFourDigitOdsYear(string fourDigitOdsYear);
         List<Collection> GetCollections();
     }
 
     public class RulesEngineService : IRulesEngineService
     {
-        protected readonly IModel _engineObjectModel;
-        protected string _fourDigitOdsDbYear = DateTime.Now.ToString("yyyy");
-
-        // public RulesEngineService(Model engineObjectModel, string fourDigitOdsDbYear)
-        // {
-        //     EngineObjectModel = engineObjectModel;
-        //     FourDigitOdsDbYear = fourDigitOdsDbYear;
-        // }
+        private readonly IModel _engineObjectModel;
+        private string _fourDigitOdsDbYear = DateTime.Now.ToString("yyyy");
 
         public RulesEngineService(IModel engineObjectModel)
         {
@@ -38,9 +33,11 @@ namespace BusinessRulesEngineConsoleApp.Models
             return _engineObjectModel.GetCollections().ToList();
         }
 
-        public int RunEngine(string collectionId)
+        public int RunEngine(string collectionId, string fourDigitOdsDbYear = null)
         {
-            // ValidationReportSummary newReportSummary = null;
+            if (fourDigitOdsDbYear != null)
+                _fourDigitOdsDbYear = fourDigitOdsDbYear;
+
             using (var odsRawDbContext = new RawOdsDbContext(_fourDigitOdsDbYear))
             {
                 var newRuleValidationExecution = new RuleValidation { CollectionId = collectionId };
@@ -70,6 +67,12 @@ namespace BusinessRulesEngineConsoleApp.Models
                 }
                 return (int)newRuleValidationExecution.RuleValidationId;
             }
+        }
+
+        public void SetFourDigitOdsYear(string fourDigitOdsYear)
+        {
+            if (fourDigitOdsYear != null)
+                _fourDigitOdsDbYear = fourDigitOdsYear;
         }
     }
 }

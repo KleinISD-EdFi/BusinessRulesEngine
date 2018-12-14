@@ -12,11 +12,12 @@ namespace BusinessRulesEngineConsoleApp.Models
     public interface IReportService
     {
         void CreateReport(List<int> ruleValidationIds, List<Collection> collections);
+        void SetFourDigitOdsYear(string fourDigitOdsYear);
     }
 
     public class ReportService : IReportService
     {
-        private readonly string _fourDigitOdsDbYear = DateTime.Now.ToString("yyyy");
+        private string _fourDigitOdsDbYear = DateTime.Now.ToString("yyyy");
         private List<RuleValidationDetail> _validationDetails;
         private List<RuleValidation> _ruleValidations;
         private List<RuleValidationRuleComponent> _ruleComponents;
@@ -31,6 +32,12 @@ namespace BusinessRulesEngineConsoleApp.Models
             "Rule",
             "Message"
         };
+
+        public void SetFourDigitOdsYear(string fourDigitOdsYear)
+        {
+            if (fourDigitOdsYear != null)
+                _fourDigitOdsDbYear = fourDigitOdsYear;
+        }
 
         public void CreateReport(List<int> ruleValidationIds, List<Collection> collections)
         {
