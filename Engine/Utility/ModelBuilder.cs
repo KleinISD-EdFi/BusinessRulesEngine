@@ -42,7 +42,7 @@ namespace Engine.Utility
 
                     var parser = new MsdsParser(tokens);
                     parser.RemoveErrorListeners();
-                    parser.AddErrorListener(new LoggingErrorListener());
+                    // parser.AddErrorListener(new LoggingErrorListener());
 
                     walker.Walk(listener, parser.file());
                 }
