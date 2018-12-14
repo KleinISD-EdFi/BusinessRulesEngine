@@ -1,5 +1,7 @@
 ruleset StaffChecks
 
+//table : rules.Staff
+
 rule 1.0.0
 require CheckUppercase({Staff}.[FirstName]) = 1
 else 'FirstName is not Uppercase'
@@ -11,3 +13,11 @@ else 'MiddleName is not Uppercase'
 rule 1.0.2
 require CheckUppercase({Staff}.[LastSurname]) = 1
 else 'LastSurname is not Uppercase'
+
+rule 1.0.3
+require {Staff}.[SexTypeId] is in [1,2]
+else 'SexTypeId is not 1 (F) or 2 (M)'
+
+rule 1.0.4
+require {Staff}.[HispanicLatinoEthnicity] is in [0,1]
+else 'HispanicLatinoEthnicity is not 0 (Not Hispanic or Latino) or 1 (Is Hispanic or Latino)'
