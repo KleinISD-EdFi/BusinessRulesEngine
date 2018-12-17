@@ -5,7 +5,11 @@ namespace BusinessRulesEngineConsoleApp.Database
 {
     public class RawOdsDbContext : DbContext
     {
-        public RawOdsDbContext(string fourDigitYear) : base(new OdsConfigurationValues().GetRawOdsConnectionString(fourDigitYear)) { }
+        public RawOdsDbContext(string fourDigitYear) : base(
+            new OdsConfigurationValues().GetRawOdsConnectionString(fourDigitYear))
+        {
+            System.Data.Entity.Database.SetInitializer<RawOdsDbContext>(null);
+        }
 
         public RawOdsDbContext()
         {
