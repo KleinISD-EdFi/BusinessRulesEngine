@@ -102,6 +102,9 @@
     </None>
     <None Include="BusinessRulesEngineConsoleApp.nuspec" />
     <None Include="packages.config" />
+    <Content Include="PostDeploy.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Rules\MSDS.sample" />
     <None Include="Rules\rules.nuspec" />
     <None Include="Rules\Rules.projitems" />
@@ -122,6 +125,8 @@
     <EmbeddedResource Include="Rules\ZCollectionCertificationBusinessRules.rules" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="RulesEngineMigrations\4999-Create-Rules-Schema.sql" />
+    <Content Include="RulesEngineMigrations\5000-Insert-StaffChecks-SourceViews.sql" />
     <Content Include="Rules\Rules.shproj.user" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
