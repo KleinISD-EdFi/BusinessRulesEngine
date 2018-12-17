@@ -1,13 +1,12 @@
-﻿$SQLServer = "(local)"
-$SQLDBName = "EdFi_Ods_Minimal_Template"
-$location = Get-Location
-$SubDirectory = "\RulesEngineMigrations\"
+﻿$SQLServer = "#{Ods.DatabaseServer.Name}"
+$SQLDBName = "#{Ods.Database.Name}"
+$MigrationsDirectory = "#{EngineMigrationsDirectory}"
 
 try{
     Write-Host "Starting Engine Migrations"
 
-    Set-Location -Path  "$location$SubDirectory"
-    foreach ($f in Get-ChildItem -path "$location$SubDirectory" -Filter *.sql)
+    Set-Location -Path  "$MigrationsDirectory"
+    foreach ($f in Get-ChildItem -path "$MigrationsDirectory" -Filter *.sql)
     {
         Write-Host "$f"
         Invoke-Sqlcmd -InputFile "$f" -ServerInstance "$SQLServer" -Database "$SQLDBName" -Verbose
