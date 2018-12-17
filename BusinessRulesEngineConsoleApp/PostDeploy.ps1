@@ -2,18 +2,16 @@
 $SQLDBName = "#{Ods.Database.Name}"
 $MigrationsDirectory = "#{EngineMigrationsDirectory}"
 
-try{
-    Write-Host "Starting Engine Migrations"
+Write-Host "Starting Engine Migrations"
+$Error.Clear()
 
-    Set-Location -Path  "$MigrationsDirectory"
-    foreach ($f in Get-ChildItem -path "$MigrationsDirectory" -Filter *.sql)
-    {
-        Write-Host "$f"
-        Invoke-Sqlcmd -InputFile "$f" -ServerInstance "$SQLServer" -Database "$SQLDBName" -Verbose
-    }
+Set-Location -Path  "$MigrationsDirectory"
+foreach ($f in Get-ChildItem -path "$MigrationsDirectory" -Filter *.sql){
+    Write-Host "$f"
+    Invoke-Sqlcmd -InputFile "$f" -ServerInstance "$SQLServer" -Database "$SQLDBName" -Verbose
 }
-catch{
-    $ErrorMessage = $_.Exception.Message
-    $FailedItem = $_.Exception.ItemName
-    Write-Error "$ErrorMessage"
+
+if($Error.Count -gt 0){
+    Write-Host $Error.Count
+    throw "Error running migration scripts, please resolve errors."
 }
