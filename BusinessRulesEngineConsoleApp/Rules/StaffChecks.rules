@@ -1,7 +1,5 @@
 ruleset StaffChecks
 
-//table : rules.Staff
-
 rule 1.0.0
 require CheckUppercase({Staff}.[FirstName]) = 1
 else 'FirstName is not Uppercase'

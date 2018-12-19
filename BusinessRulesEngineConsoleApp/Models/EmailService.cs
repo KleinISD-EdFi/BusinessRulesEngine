@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,40 +13,62 @@ namespace BusinessRulesEngineConsoleApp.Models
 {
     public interface IEmailService
     {
-        void SendReportEmail();
+        void SendReportEmail(List<string> emailRecipients, string csvName, string body);
     }
     public class EmailService : IEmailService
     {
-        public void SendReportEmail()
+        private readonly string _senderEmail = ConfigurationManager.AppSettings["EmailAddress"];
+        private readonly string _senderPassword = ConfigurationManager.AppSettings["EmailPassword"];
+        public readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public void SendReportEmail(List<string> emailRecipients, string csvName, string body)
         {
-            SmtpClient mySmtpClient = new SmtpClient("my.smtp.exampleserver.net");
+            var smtpClient = GetSmtpClient();
+            
+            var mailMessage = GetMailMessage(_senderEmail, emailRecipients, body);
+            
+            var csv = ConfigurationManager.AppSettings["ReportDirectory"] + $"\\{csvName}";
+            var attachment = new Attachment(csv, new ContentType("text/csv"))
+            {
+                Name = csvName
+            };
+            
+            mailMessage.Attachments.Add(attachment);
+            smtpClient.Send(mailMessage);
 
-            // set smtp-client with basicAuthentication
-            mySmtpClient.UseDefaultCredentials = false;
-            System.Net.NetworkCredential basicAuthenticationInfo = new
-                System.Net.NetworkCredential("username", "password");
-            mySmtpClient.Credentials = basicAuthenticationInfo;
+            Log.Info($"EMAILED report successfully sent to {string.Join(",",emailRecipients)}");
+        }
 
-            // add from,to mailaddresses
-            MailAddress from = new MailAddress("test@example.com", "TestFromName");
-            MailAddress to = new MailAddress("test2@example.com", "TestToName");
-            MailMessage myMail = new MailMessage(from, to);
+        private SmtpClient GetSmtpClient()
+        {
+            var smtpClient = new SmtpClient("smtp.office365.com", 587)
+            {
+                UseDefaultCredentials = false
+            };
 
-            // add ReplyTo
-            MailAddress replyTo = new MailAddress("reply@example.com");
-            myMail.ReplyToList.Add(replyTo);
+            var basicAuthenticationInfo = new
+                NetworkCredential(_senderEmail, _senderPassword);
+            smtpClient.Credentials = basicAuthenticationInfo;
+            smtpClient.EnableSsl = true;
 
-            // set subject and encoding
-            myMail.Subject = "Test message";
-            myMail.SubjectEncoding = Encoding.UTF8;
+            return smtpClient;
+        }
 
-            // set body-message and encoding
-            myMail.Body = "<b>Test Mail</b><br>using <b>HTML</b>.";
-            myMail.BodyEncoding = Encoding.UTF8;
-            // text or html
-            myMail.IsBodyHtml = true;
+        private MailMessage GetMailMessage(string from, List<string> sendTo, string body)
+        {
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress(from),
+                Subject = $"Ods validation report {DateTime.Now:MM-dd-yyyy}",
+                SubjectEncoding = Encoding.UTF8,
+                Body = body,
+                BodyEncoding = Encoding.UTF8,
+                IsBodyHtml = true
+            };
 
-            mySmtpClient.Send(myMail);
+            sendTo.ForEach(address => mailMessage.To.Add(address));
+
+            return mailMessage;
         }
     }
 }

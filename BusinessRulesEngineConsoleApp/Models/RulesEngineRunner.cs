@@ -17,6 +17,7 @@ namespace BusinessRulesEngineConsoleApp.Models
     {
         private IModel _engineObjectModel;
         private IRulesEngineService _rulesEngineService;
+        private IEmailService _emailService;
         public readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public RulesEngineRunner()
@@ -24,6 +25,7 @@ namespace BusinessRulesEngineConsoleApp.Models
             Func<Model> modelCreatorDelegate = () => new ModelBuilder(new DirectoryRulesStreams(new RulesEngineConfiguration().RulesFileFolder).Streams).Build(null, new EngineSchemaProvider());
             _engineObjectModel = modelCreatorDelegate.Invoke();
             _rulesEngineService = new RulesEngineService(_engineObjectModel);
+            _emailService = new EmailService();
         }
 
         public bool RunEngine(string fourDigitOdsYear = null)
@@ -45,7 +47,7 @@ namespace BusinessRulesEngineConsoleApp.Models
                 }
 
                 var reportService = new ReportService();
-                reportService.CreateReport(ruleValidationIds, collections);
+                reportService.CreateAndEmailReport(ruleValidationIds, collections);
 
                 Log.Info($"COMPLETED at {DateTime.Now}");
 

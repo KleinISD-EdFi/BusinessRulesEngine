@@ -1,2 +1,5 @@
 collection MainCollection includes
 StaffChecks
+
+collection TestCollection includes
+NameChecks

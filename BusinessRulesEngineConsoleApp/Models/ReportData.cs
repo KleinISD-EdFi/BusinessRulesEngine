@@ -7,7 +7,6 @@
         public string Rule { get; set; }
         public long Id { get; set; }
         public string Message { get; set; }
-        public string Table { get; set; }
 
         public string CsvString => $"{Collection},{Id},{Rule},{Message}";
     }

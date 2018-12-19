@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.Entity.Core.EntityClient;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,19 +15,20 @@ namespace BusinessRulesEngineConsoleApp.Models
 {
     public interface IReportService
     {
-        void CreateReport(List<int> ruleValidationIds, List<Collection> collections);
+        void CreateAndEmailReport(List<int> ruleValidationIds, List<Collection> collections);
         void SetFourDigitOdsYear(string fourDigitOdsYear);
     }
 
     public class ReportService : IReportService
     {
         private string _fourDigitOdsDbYear = DateTime.Now.ToString("yyyy");
-        private List<RuleValidationDetail> _validationDetails;
-        private List<RuleValidation> _ruleValidations;
-        private List<RuleValidationRuleComponent> _ruleComponents;
-        // maybe move email list to somewhere else.
-        private List<string> _emails;
+        private List<RuleValidationDetail> ValidationDetails { get; set; }
+        private List<RuleValidation> RuleValidations { get; set; }
+        private List<RuleValidationRuleComponent> RuleComponents { get; set; }
+        private readonly List<string> _emailRecipients = new List<string>();
         private IEmailService _emailService;
+        public readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 
         private readonly List<string> _columns = new List<string>()
         {
@@ -39,13 +44,11 @@ namespace BusinessRulesEngineConsoleApp.Models
                 _fourDigitOdsDbYear = fourDigitOdsYear;
         }
 
-        public void CreateReport(List<int> ruleValidationIds, List<Collection> collections)
+        public void CreateAndEmailReport(List<int> ruleValidationIds, List<Collection> collections)
         {
             var sb = new StringBuilder();
-            SetAllValidationDetails();
-            SetAllRuleValidations();
-            SetAllRuleComponents();
-            SetAllEmails();
+            
+            InitialiseProperties();
 
             var validationDetailsToEmail = new List<RuleValidationDetail>();
 
@@ -70,7 +73,68 @@ namespace BusinessRulesEngineConsoleApp.Models
                 sb.AppendLine(reportData.CsvString);
             }
 
-            File.WriteAllText(@"C:\temp\InvalidRecords.csv", sb.ToString());
+            var csvName = SaveCsvReportToDisk(sb.ToString());
+
+            EmailReport(csvName);
+
+            Log.Info("CLEARING rules tables.");
+            ClearEngineTables();
+        }
+
+        private void EmailReport(string csvName)
+        {
+            _emailService.SendReportEmail(_emailRecipients, csvName, CreateEmailBody());
+        }
+
+        private string CreateEmailBody()
+        {
+            var errorCount = ValidationDetails.Count;
+            var collectionList = new List<string>();
+
+            foreach (var ruleValidation in RuleValidations)
+            {
+                collectionList.Add(ruleValidation.CollectionId);
+            }
+
+            return $@"<p><strong>Report Summary</strong></p>
+                      <p>-------------------------------------------------------------</p>
+                      <p><br />Total number of errors : <strong>{errorCount}</strong></p>
+                      <p>Collections ran : <strong>{string.Join(",", collectionList)}</strong></p>";
+        }
+
+        private void ClearEngineTables()
+        {
+            using (var odsRawDbContext = new RawOdsDbContext(_fourDigitOdsDbYear))
+            {
+                foreach (var ruleValidation in RuleValidations)
+                {
+                    odsRawDbContext.RuleValidations.Remove(odsRawDbContext.RuleValidations.First(r => r.RuleValidationId == ruleValidation.RuleValidationId));
+                    odsRawDbContext.SaveChanges();
+                }
+            }
+
+            Log.Info("CLEARED rules tables.");
+        }
+
+        private void InitialiseProperties()
+        {
+            SetAllValidationDetails();
+            SetAllRuleValidations();
+            SetAllRuleComponents();
+            SetAllEmailRecipients();
+
+            _emailService = new EmailService();
+        }
+
+        /// <param name="csvText">Text to save into a csv file.</param>
+        /// <returns>Name of csv file.</returns>
+        private string SaveCsvReportToDisk(string csvText)
+        {
+            string csvName = $"Rules Engine Report {DateTime.Now:MM-dd-yyyy}.csv";
+            var directoryToSave = $"{ConfigurationManager.AppSettings["ReportDirectory"]}\\{csvName}";
+            File.WriteAllText(directoryToSave, csvText);
+
+            return csvName;
         }
 
         // Validation Results
@@ -78,7 +142,7 @@ namespace BusinessRulesEngineConsoleApp.Models
         {
             using (var odsRawDbContext = new RawOdsDbContext(_fourDigitOdsDbYear))
             {
-                _validationDetails = odsRawDbContext.RuleValidationDetails.ToList();
+                ValidationDetails = odsRawDbContext.RuleValidationDetails.ToList();
             }
         }
 
@@ -87,7 +151,7 @@ namespace BusinessRulesEngineConsoleApp.Models
         {
             using (var odsRawDbContext = new RawOdsDbContext(_fourDigitOdsDbYear))
             {
-                _ruleValidations = odsRawDbContext.RuleValidations.ToList();
+                RuleValidations = odsRawDbContext.RuleValidations.ToList();
             }
         }
 
@@ -96,32 +160,32 @@ namespace BusinessRulesEngineConsoleApp.Models
         {
             using (var odsRawDbContext = new RawOdsDbContext(_fourDigitOdsDbYear))
             {
-                _ruleComponents = odsRawDbContext.RuleValidationRuleComponents.ToList();
+                RuleComponents = odsRawDbContext.RuleValidationRuleComponents.ToList();
             }
         }
 
-        private void SetAllEmails()
+        private void SetAllEmailRecipients()
         {
             using (var odsRawDbContext = new RawOdsDbContext(_fourDigitOdsDbYear))
             {
                 var records = odsRawDbContext.RuleValidationRecipients.ToList();
-                records.ForEach(record => _emails.Add(record.EmailAddress));
+                records.ForEach(record => _emailRecipients.Add(record.EmailAddress));
             }
         }
 
         private List<RuleValidationDetail> GetDetailsFromRuleValidationId(int ruleValidationId)
         {
-            return _validationDetails.Where(record => record.RuleValidationId == ruleValidationId).ToList();
+            return ValidationDetails.Where(record => record.RuleValidationId == ruleValidationId).ToList();
         }
 
         private string GetCollectionNameFromRuleValidationId(long ruleValidationId)
         {
-            return _ruleValidations.First(record => record.RuleValidationId == ruleValidationId).CollectionId;
+            return RuleValidations.First(record => record.RuleValidationId == ruleValidationId).CollectionId;
         }
 
         private string GetRuleNameFromRuleComponentId(string ruleId)
         {
-            return _ruleComponents.First(record => record.RuleId == ruleId).RulesetId;
+            return RuleComponents.First(record => record.RuleId == ruleId).RulesetId;
         }
     }
 }
