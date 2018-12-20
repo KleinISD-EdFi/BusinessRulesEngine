@@ -33,6 +33,7 @@ namespace BusinessRulesEngineConsoleApp.Models
                 Name = csvName
             };
             
+            // todo - if error count is more than 0 then add attachment
             mailMessage.Attachments.Add(attachment);
             smtpClient.Send(mailMessage);
 
@@ -41,7 +42,10 @@ namespace BusinessRulesEngineConsoleApp.Models
 
         private SmtpClient GetSmtpClient()
         {
-            var smtpClient = new SmtpClient("smtp.office365.com", 587)
+            var smtpHost = ConfigurationManager.AppSettings["SmtpHost"];
+            var smtpPort = int.Parse(ConfigurationManager.AppSettings["SmtpPort"]);
+            
+            var smtpClient = new SmtpClient(smtpHost, smtpPort)
             {
                 UseDefaultCredentials = false
             };
@@ -66,9 +70,28 @@ namespace BusinessRulesEngineConsoleApp.Models
                 IsBodyHtml = true
             };
 
+            if (sendTo.Count == 0)
+            {
+                throw new Exception("No recipients to send to. Table - [rules].[RuleValidationRecipients] is empty, please insert one or more email addresses and try again.");
+            }
+
+            // Call IsEmailValid on each address.
+            sendTo.ForEach(IsEmailValid);
             sendTo.ForEach(address => mailMessage.To.Add(address));
 
             return mailMessage;
+        }
+
+        private void IsEmailValid(string emailAddress)
+        {
+            try
+            {
+                MailAddress m = new MailAddress(emailAddress);
+            }
+            catch
+            {
+                throw new Exception($"\"{emailAddress}\" is not a valid email address. Table - [rules].[RuleValidationRecipients].");
+            }
         }
     }
 }
