@@ -1,11 +1,11 @@
-IF OBJECT_ID('rules.Staff') IS NULL
+IF OBJECT_ID('[rules].[Staff]') IS NULL
 	BEGIN
 		EXEC('CREATE VIEW [rules].[Staff] AS
 				SELECT StaffUSI AS Id, FirstName, MiddleName, LastSurname, SexTypeId, HispanicLatinoEthnicity
 				FROM edfi.Staff')
 	END
 
-IF OBJECT_ID('rules.Staff') IS NULL
+IF OBJECT_ID('[rules].[Student]') IS NULL
 	BEGIN
 		EXEC('CREATE VIEW [rules].[Student] AS
 				SELECT [StudentUSI] as Id, [FirstName], [LastSurname]
