@@ -130,11 +130,23 @@ namespace BusinessRulesEngineConsoleApp.Models
         /// <returns>Name of csv file.</returns>
         private string SaveCsvReportToDisk(string csvText)
         {
+            CheckDirectory();
+
             string csvName = $"Rules Engine Report {DateTime.Now:MM-dd-yyyy}.csv";
             var directoryToSave = $"{ConfigurationManager.AppSettings["ReportDirectory"]}\\{csvName}";
             File.WriteAllText(directoryToSave, csvText);
 
             return csvName;
+        }
+
+        private void CheckDirectory()
+        {
+            var path = ConfigurationManager.AppSettings["ReportDirectory"];
+            if (!Directory.Exists(path))
+            {
+                DirectoryInfo directoryInfo = Directory.CreateDirectory(path);
+                Log.Info($"Report directory was missing. Creating directory at {path}");
+            }
         }
 
         // Validation Results
