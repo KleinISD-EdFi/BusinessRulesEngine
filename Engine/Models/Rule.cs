@@ -11,7 +11,7 @@ namespace Engine.Models
         public List<string> CollectionIds { get; } = new List<string>();
         public List<string> Components { get; } = new List<string>();
         public string Sql { get; }
-        public string ExecSql => $"INSERT INTO [{_schemaProvider.Value}].[RuleValidationDetail] " +
+        public string ExecSql => $"INSERT INTO [ValidationResults].[{_schemaProvider.Value}].[RuleValidationDetail] " +
                                  $"SELECT @RuleValidationId, * FROM ({Sql}) _sql";
 
         public Rule(string ruleId, string rulesetId, ISchemaProvider schemaProvider, IEnumerable<string> collectionIds = null, string sql = null, IEnumerable<string> components = null)

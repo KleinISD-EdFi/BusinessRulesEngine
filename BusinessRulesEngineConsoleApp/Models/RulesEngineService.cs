@@ -40,32 +40,34 @@ namespace BusinessRulesEngineConsoleApp.Models
 
             using (var odsRawDbContext = new RawOdsDbContext(_fourDigitOdsDbYear))
             {
-                var newRuleValidationExecution = new RuleValidation { CollectionId = collectionId };
-                odsRawDbContext.RuleValidations.Add(newRuleValidationExecution);
-                odsRawDbContext.SaveChanges();
-
-                var rules = _engineObjectModel.GetRules(collectionId).ToArray();
-                var ruleComponents = rules.SelectMany(r => r.Components.Distinct().Select(c => new { r.RulesetId, r.RuleId, Component = c }));
-                foreach (var singleRuleNeedingToBeValidated in ruleComponents)
+                using (var validationResultsDbContext = new ValidationResultsDbContext())
                 {
-                    odsRawDbContext.RuleValidationRuleComponents.Add(new RuleValidationRuleComponent
+                    var newRuleValidationExecution = new RuleValidation { CollectionId = collectionId };
+                    validationResultsDbContext.RuleValidations.Add(newRuleValidationExecution);
+                    validationResultsDbContext.SaveChanges();
+
+                    var rules = _engineObjectModel.GetRules(collectionId).ToArray();
+                    var ruleComponents = rules.SelectMany(r => r.Components.Distinct().Select(c => new { r.RulesetId, r.RuleId, Component = c }));
+                    foreach (var singleRuleNeedingToBeValidated in ruleComponents)
                     {
-                        RuleValidationId = newRuleValidationExecution.RuleValidationId,
-                        RulesetId = singleRuleNeedingToBeValidated.RulesetId,
-                        RuleId = singleRuleNeedingToBeValidated.RuleId,
-                        Component = singleRuleNeedingToBeValidated.Component
-                    });
+                        validationResultsDbContext.RuleValidationRuleComponents.Add(new RuleValidationRuleComponent
+                        {
+                            RuleValidationId = newRuleValidationExecution.RuleValidationId,
+                            RulesetId = singleRuleNeedingToBeValidated.RulesetId,
+                            RuleId = singleRuleNeedingToBeValidated.RuleId,
+                            Component = singleRuleNeedingToBeValidated.Component
+                        });
+                    }
+                    validationResultsDbContext.SaveChanges();
+                    foreach (var rule in rules)
+                    {
+                        var detailParams = new List<SqlParameter> { new SqlParameter("@RuleValidationId", newRuleValidationExecution.RuleValidationId) };
+                        detailParams.AddRange(_engineObjectModel.GetParameters(collectionId).Select(x => new SqlParameter(x.ParameterName, x.Value)));
+                        odsRawDbContext.Database.CommandTimeout = 60;
+                        var result = odsRawDbContext.Database.ExecuteSqlCommand(rule.ExecSql, detailParams.ToArray());
+                    }
+                    return (int)newRuleValidationExecution.RuleValidationId;
                 }
-                odsRawDbContext.SaveChanges();
-
-                foreach (var rule in rules)
-                {
-                    var detailParams = new List<SqlParameter> { new SqlParameter("@RuleValidationId", newRuleValidationExecution.RuleValidationId) };
-                    detailParams.AddRange(_engineObjectModel.GetParameters(collectionId).Select(x => new SqlParameter(x.ParameterName, x.Value)));
-                    odsRawDbContext.Database.CommandTimeout = 60;
-                    var result = odsRawDbContext.Database.ExecuteSqlCommand(rule.ExecSql, detailParams.ToArray());
-                }
-                return (int)newRuleValidationExecution.RuleValidationId;
             }
         }
 

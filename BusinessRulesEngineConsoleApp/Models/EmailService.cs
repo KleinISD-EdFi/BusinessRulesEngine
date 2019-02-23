@@ -33,7 +33,6 @@ namespace BusinessRulesEngineConsoleApp.Models
                 Name = csvName
             };
             
-            // todo - if error count is more than 0 then add attachment
             mailMessage.Attachments.Add(attachment);
             smtpClient.Send(mailMessage);
 
@@ -69,10 +68,10 @@ namespace BusinessRulesEngineConsoleApp.Models
                 BodyEncoding = Encoding.UTF8,
                 IsBodyHtml = true
             };
-
             if (sendTo.Count == 0)
             {
-                throw new Exception("No recipients to send to. Table - [rules].[RuleValidationRecipients] is empty, please insert one or more email addresses and try again.");
+                Log.Warn("No recipients to send to. Table - [ValidationResults].[rules].[RuleValidationRecipients] is empty, please insert one or more email addresses and try again." +
+                         $"\nThe latest results are saved to {ConfigurationManager.AppSettings["ReportDirectory"]}");
             }
 
             // Call IsEmailValid on each address.
@@ -90,7 +89,7 @@ namespace BusinessRulesEngineConsoleApp.Models
             }
             catch
             {
-                throw new Exception($"\"{emailAddress}\" is not a valid email address. Table - [rules].[RuleValidationRecipients].");
+                throw new Exception($"\"{emailAddress}\" is not a valid email address. Table - [ValidationResults].[rules].[RuleValidationRecipients].");
             }
         }
     }
