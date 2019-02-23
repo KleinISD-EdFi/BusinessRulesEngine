@@ -45,7 +45,7 @@ namespace BusinessRulesEngineConsoleApp.Models
                 }
 
                 var reportService = new ReportService();
-                reportService.CreateAndEmailReport(ruleValidationIds, collections);
+                reportService.CreateAndEmailReport(ruleValidationIds, collections, fourDigitOdsYear);
 
                 Log.Info($"COMPLETED at {DateTime.Now}");
 
@@ -53,7 +53,7 @@ namespace BusinessRulesEngineConsoleApp.Models
             }
             catch(Exception ex)
             {
-                Log.Error("FAILED");
+                Log.Error("---------------FAILED---------------");
                 Log.Error(ex);
 
                 return false;
