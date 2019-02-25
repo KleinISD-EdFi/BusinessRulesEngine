@@ -1,6 +1,6 @@
 ﻿$SQLServer = "#{Ods.DatabaseServer.Name}"
 $SQLDBName = "#{Ods.Database.Name}"
-$MigrationsDirectory = "#{EngineMigrationsDirectory}"
+$MigrationsDirectory = "#{EngineDeploymentScriptsDirectory}"
 
 Write-Host "Starting Engine Migrations"
 $Error.Clear()
