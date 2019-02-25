@@ -2,7 +2,7 @@
 
 $odsDatabaseRegEx = $OctopusParameters['Ods.DatabaseNameRegex']
 $dataSource = $OctopusParameters['DatabaseServer.Name']
-$sqlScript = $OctopusParameters['EngineMigrationsDirectory']
+$sqlScript = $OctopusParameters['UpdateOdsSqlScript.Path']
 $odsList = @()
 
 $Server = New-Object Microsoft.SqlServer.Management.Smo.Server("$dataSource")
@@ -15,6 +15,6 @@ foreach($server in $Server.Databases){
 
 foreach($ods in $odsList){
     $connectionString = "Data Source=$dataSource;Initial Catalog=$ods;Integrated Security=true;"
-    Write-Host "Running Update-Ods-For-Rules-Engine.sql on $ods"
+    Write-Host "Running $OctopusParameters['UpdateOdsSqlScript.Name'] on $ods"
     Invoke-Sqlcmd -ConnectionString $connectionString -InputFile $sqlScript
 }
