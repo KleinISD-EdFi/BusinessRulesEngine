@@ -1,1 +1,0 @@
-INSERT INTO [rules].[RuleValidationRecipients] (EmailAddress) VALUES ('sys_doubleline@kleinisd.net')
