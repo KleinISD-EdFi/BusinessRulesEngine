@@ -106,6 +106,8 @@
     <Content Include="PostDeploy.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="RulesEngineDeploymentScripts\CreateWindowsTask.ps1" />
+    <None Include="RulesEngineDeploymentScripts\RulesEngineDeployment.ps1" />
     <None Include="Rules\MSDS.sample" />
     <None Include="Rules\rules.nuspec" />
     <None Include="Rules\Rules.projitems" />
@@ -126,8 +128,7 @@
     <EmbeddedResource Include="Rules\ZCollectionCertificationBusinessRules.rules" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RulesEngineMigrations\4999-Create-Rules-Schema.sql" />
-    <Content Include="RulesEngineMigrations\5000-Insert-StaffChecks-SourceViews.sql" />
+    <Content Include="RulesEngineDeploymentScripts\Sql Scripts\Update-Ods-For-Rules-Engine.sql" />
     <Content Include="Rules\Rules.shproj.user" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
