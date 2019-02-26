@@ -1,7 +1,6 @@
 ﻿$businessRulesExeLocation = $OctopusParameters['Octopus.Action[Deploy Console Application].Output.Package.InstallationDirectoryPath'] + "BusinessRulesEngineConsoleApp.exe"
 $businessRulesTaskName = $OctopusParameters['RulesEngine.TaskName']
 $runAtTime = $OctopusParameters['RulesEngine.RunAtTime']
-$frequency = $OctopusParameters['RulesEngine.Frequence']
 
 $taskExists = Get-ScheduledTask | Where-Object {$_.TaskName -like $businessRulesTaskName }
 
@@ -21,7 +20,7 @@ else {
     Write-Host "Path: $businessRulesExeLocation"
 	
     $A = New-ScheduledTaskAction -Execute $businessRulesExeLocation
-    $T = New-ScheduledTaskTrigger -At $runAtTime -$frequency
+    $T = New-ScheduledTaskTrigger -At $runAtTime -Daily
     $P = New-ScheduledTaskPrincipal "sys_doubleline"
     $S = New-ScheduledTaskSettingsSet
     $D = New-ScheduledTask -Action $A -Principal $P -Trigger $T -Settings $S
