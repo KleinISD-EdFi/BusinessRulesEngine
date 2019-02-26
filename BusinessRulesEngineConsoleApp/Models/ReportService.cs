@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
-using System.Data.Entity.Core.EntityClient;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using BusinessRulesEngineConsoleApp.Database;
 using Engine.Models;
 

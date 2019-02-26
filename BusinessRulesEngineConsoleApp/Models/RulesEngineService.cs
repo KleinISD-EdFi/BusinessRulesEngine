@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Web;
 using Engine.Models;
 using System.Data.SqlClient;
-using System.IO;
-using System.Text;
 using BusinessRulesEngineConsoleApp.Database;
 
 namespace BusinessRulesEngineConsoleApp.Models
