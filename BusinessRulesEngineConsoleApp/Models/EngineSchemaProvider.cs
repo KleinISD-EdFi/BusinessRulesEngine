@@ -15,7 +15,5 @@ namespace BusinessRulesEngineConsoleApp.Models
         {
             Value = new RulesEngineConfiguration().RuleEngineResultsSchema;
         }
-
-
     }
 }
