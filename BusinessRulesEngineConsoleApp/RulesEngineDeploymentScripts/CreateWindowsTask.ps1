@@ -1,4 +1,4 @@
-﻿$businessRulesExeLocation = $OctopusParameters['Octopus.Action[Deploy Console Application].Output.Package.InstallationDirectoryPath'] + "BusinessRulesEngineConsoleApp.exe"
+﻿$businessRulesExeLocation = $OctopusParameters['Octopus.Action[Deploy Console Application].Output.Package.InstallationDirectoryPath'] + "\BusinessRulesEngineConsoleApp.exe"
 $businessRulesTaskName = $OctopusParameters['RulesEngine.TaskName']
 $runAtTime = $OctopusParameters['RulesEngine.RunAtTime']
 
