@@ -46,9 +46,7 @@ namespace BusinessRulesEngineConsoleApp.Models
                 UseDefaultCredentials = false
             };
 
-            var basicAuthenticationInfo = new
-                NetworkCredential(_senderEmail, _senderPassword);
-            smtpClient.Credentials = basicAuthenticationInfo;
+            smtpClient.Credentials = new NetworkCredential(_senderEmail, _senderPassword, "kleinisd.net");
             smtpClient.EnableSsl = true;
 
             return smtpClient;
