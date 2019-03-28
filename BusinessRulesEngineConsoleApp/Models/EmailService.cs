@@ -10,7 +10,7 @@ namespace BusinessRulesEngineConsoleApp.Models
 {
     public interface IEmailService
     {
-        void SendReportEmail(List<string> emailRecipients, string csvName, string body);
+        void SendReportEmail(List<string> emailRecipients, string csvName, string body, bool includeCsv = true);
     }
     public class EmailService : IEmailService
     {
@@ -18,7 +18,7 @@ namespace BusinessRulesEngineConsoleApp.Models
         private readonly string _senderPassword = ConfigurationManager.AppSettings["EmailPassword"];
         public readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void SendReportEmail(List<string> emailRecipients, string csvName, string body)
+        public void SendReportEmail(List<string> emailRecipients, string csvName, string body, bool includeCsv = true)
         {
             var smtpClient = GetSmtpClient();
             
@@ -30,7 +30,9 @@ namespace BusinessRulesEngineConsoleApp.Models
                 Name = csvName
             };
             
-            mailMessage.Attachments.Add(attachment);
+            if(includeCsv)
+                mailMessage.Attachments.Add(attachment);
+
             smtpClient.Send(mailMessage);
 
             Log.Info($"EMAILED report successfully sent to {string.Join(",",emailRecipients)}");

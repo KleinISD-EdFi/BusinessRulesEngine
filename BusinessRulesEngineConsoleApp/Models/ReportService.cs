@@ -132,7 +132,7 @@ namespace BusinessRulesEngineConsoleApp.Models
             if(errors)
                 _emailService.SendReportEmail(_emailRecipients, csvName, CreateEmailBodyWithErrors());
             else
-                _emailService.SendReportEmail(_emailRecipients, csvName, CreateEmailBodyWithNoErrors());
+                _emailService.SendReportEmail(_emailRecipients, csvName, CreateEmailBodyWithNoErrors(), false);
         }
 
         private string CreateEmailBodyWithErrors()
