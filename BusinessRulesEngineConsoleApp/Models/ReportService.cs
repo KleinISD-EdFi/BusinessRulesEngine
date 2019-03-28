@@ -68,7 +68,7 @@ namespace BusinessRulesEngineConsoleApp.Models
 
             // Check to see if there are any errors in the .csv
             // to decide on which email to send
-            EmailReport(csvName, validationDetailsToEmail.Count == 0);
+            EmailReport(csvName, validationDetailsToEmail.Count != 0);
 
         }
 
