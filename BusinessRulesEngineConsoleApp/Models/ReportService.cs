@@ -64,11 +64,12 @@ namespace BusinessRulesEngineConsoleApp.Models
             }
 
             var csvName = SaveCsvReportToDisk(sb.ToString());
-            ClearEngineTables();
 
             // Check to see if there are any errors in the .csv
             // to decide on which email to send
-            EmailReport(csvName, validationDetailsToEmail.Count != 0);
+            var emailSent = EmailReport(csvName, validationDetailsToEmail.Count != 0);
+            if (emailSent)
+                DeleteCsvFromDisk(csvName);
 
         }
 
@@ -101,6 +102,20 @@ namespace BusinessRulesEngineConsoleApp.Models
             return csvName;
         }
 
+        private void DeleteCsvFromDisk(string csvName)
+        {
+            var fileToDelete = $"{_directory}\\{csvName}";
+
+            try
+            {
+                File.Delete(fileToDelete);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error deleting .csv report. {ex.Message}");
+            }
+        }
+
         private void CheckDirectory()
         {
             if (!Directory.Exists(_directory))
@@ -126,13 +141,23 @@ namespace BusinessRulesEngineConsoleApp.Models
             Log.Info("CLEARED rules tables.");
         }
 
-        private void EmailReport(string csvName, bool errors)
+        private bool EmailReport(string csvName, bool errors)
         {
-            Log.Info($"Sending email to {string.Join(",", _emailRecipients)}.");
-            if(errors)
-                _emailService.SendReportEmail(_emailRecipients, csvName, CreateEmailBodyWithErrors());
-            else
-                _emailService.SendReportEmail(_emailRecipients, csvName, CreateEmailBodyWithNoErrors(), false);
+            try
+            {
+                Log.Info($"Sending email to {string.Join(",", _emailRecipients)}.");
+                if (errors)
+                    _emailService.SendReportEmail(_emailRecipients, csvName, CreateEmailBodyWithErrors());
+                else
+                    _emailService.SendReportEmail(_emailRecipients, csvName, CreateEmailBodyWithNoErrors(), false);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in emailing report. {ex.Message}");
+                return false;
+            }
+
+            return true;
         }
 
         private string CreateEmailBodyWithErrors()

@@ -33,6 +33,8 @@ namespace BusinessRulesEngineConsoleApp.Models
             // If command line argument is successfully passed then set it in the rulesEngineService here.
             if(fourDigitOdsYear != null)
                 _rulesEngineService.SetFourDigitOdsYear(fourDigitOdsYear);
+            else
+                _rulesEngineService.SetFourDigitOdsYear(DateTime.Today.ToString("yyyy"));
 
             try
             {
